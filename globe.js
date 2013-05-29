@@ -38,6 +38,38 @@
 
 
     });
+	
+	function setBaseLayerPicker(widget) {
+		var providerViewModels = [];
+		providerViewModels.push(Cesium.ImageryProviderViewModel.fromConstants({
+				name : 'Stamen Toner',
+				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/stamenToner.png',
+				tooltip : 'A high contrast black and white map.\nhttp://maps.stamen.com',
+				creationFunction : function() {
+					return new Cesium.OpenStreetMapImageryProvider({
+						url : 'http://tile.stamen.com/toner/',
+						credit : 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'
+					});
+				}
+			}));
+		providerViewModels.push(Cesium.ImageryProviderViewModel.fromConstants({
+				name : 'Bing Maps Aerial',
+				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/bingAerial.png',
+				tooltip : 'Bing Maps aerial imagery \nhttp://www.bing.com/maps',
+				creationFunction : function() {
+					return new Cesium.BingMapsImageryProvider({
+						url : 'http://dev.virtualearth.net',
+						mapStyle : Cesium.BingMapsStyle.AERIAL,
+					});
+				}
+			}));
+			
+		//Finally, create the actual widget using our view models.
+		var layers = widget.centralBody.getImageryLayers();
+		var baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerPickerContainer', layers, providerViewModels);
+		//Use the first item in the list as the current selection.
+		baseLayerPicker.viewModel.selectedItem(providerViewModels[0]);
+	}
 
     function updateLineData() {
         var ellipsoid = widget.centralBody.getEllipsoid();
@@ -82,8 +114,7 @@
     
     widget.transitioner.toColumbusView();
 
-    //var providerViewModels = widget.baseLayerPicker.viewModel.imageryProviderViewModels;
-    //widget.baseLayerPicker.viewModel.selectedItem(providerViewModels()[8]);
+	setBaseLayerPicker(widget);
 
     var clockViewModel = new Cesium.ClockViewModel(widget.clock);
     clockViewModel.startTime(Cesium.JulianDate.fromIso8601("1800-01-02"));
