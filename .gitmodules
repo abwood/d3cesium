@@ -1,0 +1,3 @@
+[submodule "3rdParty/cesium"]
+	path = 3rdParty/cesium
+	url = git://github.com/abwood/cesium.git
