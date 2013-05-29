@@ -1,0 +1,47 @@
+#chart {
+	display:block;
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background: rgba(42, 42, 42, 0.8);
+	border-radius: 7px;
+	-webkit-transform: scale(0.4);
+	-webkit-transform-origin: 0 0;
+	-webkit-transition-property: -webkit-transform;
+	-webkit-transition-duration: 1s;
+	-moz-transform: scale(0.4);
+	-moz-transform-origin: 0 0;
+	-moz-transition-property: -moz-transform;
+	-moz-transition-duration: 1s;
+	transform: scale(0.4);
+	transform-origin: 0 0;
+	transition-property: transform;
+	transition-duration: 1s;
+}
+
+@media only screen and (min-width: 1920px) {
+    #chart {
+        -webkit-transform: scale(0.75);
+        -moz-transform: scale(0.75);
+        transform: scale(0.75);
+    }
+}
+
+#chart:hover {
+	-webkit-transform: scale(1);
+	-moz-transform: scale(1);
+	transform: scale(1);
+}
+
+.label, .tick {
+	fill: #eee;
+}
+
+.year {
+    font-size: 40px;
+}
+
+.domain {
+	fill: none;
+	stroke: #eee;
+}
