@@ -153,10 +153,15 @@
 	widget.timeline.addEventListener('settime', onTimelineScrub, false);
 	widget.timeline.updateFromClock();
     widget.timeline.zoomTo(widget.clock.startTime, widget.clock.stopTime);
-
+	// setup scene mode picker
 	var transitioner = new Cesium.SceneTransitioner(widget.scene);
 	widget.transitioner = transitioner;
 	var sceneModePicker = new Cesium.SceneModePicker('sceneModePickerContainer', widget.transitioner)
+	// setup home button
+	var homeViewModel = new Cesium.HomeButtonViewModel(widget.scene);
+	var homeWidget = new Cesium.HomeButton('homeButtonContainer', widget.scene);
+	homeWidget.viewModel = homeViewModel;
+	
 
 
     sharedObject.flyTo = function(d) {
