@@ -154,6 +154,9 @@
 	widget.timeline.updateFromClock();
     widget.timeline.zoomTo(widget.clock.startTime, widget.clock.stopTime);
 
+	var transitioner = new Cesium.SceneTransitioner(widget.scene);
+	widget.transitioner = transitioner;
+	var sceneModePicker = new Cesium.SceneModePicker('sceneModePickerContainer', widget.transitioner)
 
 
     sharedObject.flyTo = function(d) {
