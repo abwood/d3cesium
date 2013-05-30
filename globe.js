@@ -161,6 +161,10 @@
 	var homeViewModel = new Cesium.HomeButtonViewModel(widget.scene);
 	var homeWidget = new Cesium.HomeButton('homeButtonContainer', widget.scene);
 	homeWidget.viewModel = homeViewModel;
+	// setup fullscreenbutton
+	var fullscreenViewModel = new Cesium.FullscreenButtonViewModel(document.body);
+	var fullscreenButton = new Cesium.FullscreenButton('fullscreenButtonContainer');
+	fullScreenButton.viewModel = fullscreenViewModel;
 	
 
 
