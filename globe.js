@@ -125,12 +125,15 @@
     var yearPerSec = 86400*365;
     clockViewModel.multiplier(yearPerSec * 5);
     widget.clockViewModel = clockViewModel;
-
-    //widget.animationViewModel.setShuttleRingTicks([yearPerSec, yearPerSec*5, yearPerSec*10, yearPerSec*50]);
-    //widget.animationViewModel.setDateFormatter(function(date, viewModel) {
-    //    var gregorianDate = date.toGregorianDate();
-    //    return 'Year: ' + gregorianDate.year;
-    //});
+	
+	var animationViewModel = new Cesium.AnimationViewModel(widget.clockViewModel);
+	var animationWidget = new Cesium.Animation('animationContainer', animationViewModel);
+	widget.animationViewModel = animationViewModel;
+    widget.animationViewModel.setShuttleRingTicks([yearPerSec, yearPerSec*5, yearPerSec*10, yearPerSec*50]);
+    widget.animationViewModel.setDateFormatter(function(date, viewModel) {
+        var gregorianDate = date.toGregorianDate();
+        return 'Year: ' + gregorianDate.year;
+    });
 
     var year = 1800;
 
