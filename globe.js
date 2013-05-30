@@ -98,8 +98,16 @@
 
     var widget = new Cesium.CesiumWidget('cesiumContainer');
     
+	var year = 1800;
     function animate() {
-        // INSERT CODE HERE to update primitives based on changes to animation time, camera parameters, etc.
+        var gregorianDate = widget.clock.currentTime.toGregorianDate();
+        var currentYear = gregorianDate.year + gregorianDate.month/12;// + gregorianDate.day/31;
+        if (currentYear !== year && typeof window.displayYear !== 'undefined'){
+            window.displayYear(currentYear);
+            year = currentYear;
+
+            updateLineData();
+        }
     }
     
     function tick() {
@@ -114,8 +122,9 @@
     
     widget.transitioner.toColumbusView();
 
+	// setup baselayer picker
 	setBaseLayerPicker(widget);
-
+	// setup clockview model
     var clockViewModel = new Cesium.ClockViewModel(widget.clock);
     clockViewModel.startTime(Cesium.JulianDate.fromIso8601("1800-01-02"));
     clockViewModel.currentTime(Cesium.JulianDate.fromIso8601("1800-01-02"));
@@ -125,7 +134,7 @@
     var yearPerSec = 86400*365;
     clockViewModel.multiplier(yearPerSec * 5);
     widget.clockViewModel = clockViewModel;
-	
+	// setup animationview model
 	var animationViewModel = new Cesium.AnimationViewModel(widget.clockViewModel);
 	var animationWidget = new Cesium.Animation('animationContainer', animationViewModel);
 	widget.animationViewModel = animationViewModel;
@@ -134,22 +143,17 @@
         var gregorianDate = date.toGregorianDate();
         return 'Year: ' + gregorianDate.year;
     });
+	// setup timeline
+	function onTimelineScrub(e) {
+		widget.clock.currentTime = e.timeJulian;
+		widget.clock.shouldAnimate = false;
+	}
+	var timeline = new Cesium.Timeline('timelineContainer', widget.clock);
+	widget.timeline = timeline;
+	widget.timeline.addEventListener('settime', onTimelineScrub, false);
+	widget.timeline.updateFromClock();
+    widget.timeline.zoomTo(widget.clock.startTime, widget.clock.stopTime);
 
-    var year = 1800;
-
-    widget.clock.onTick.addEventListener(function(){
-        var gregorianDate = widget.clock.currentTime.toGregorianDate();
-        var currentYear = gregorianDate.year + gregorianDate.month/12;// + gregorianDate.day/31;
-        if (currentYear !== year && typeof window.displayYear !== 'undefined'){
-            window.displayYear(currentYear);
-            year = currentYear;
-
-            updateLineData();
-        }
-    });
-
-
-    //widget.timeline.zoomTo(widget.clock.startTime, widget.clock.stopTime);
 
 
     sharedObject.flyTo = function(d) {
