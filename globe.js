@@ -25,8 +25,12 @@
                 Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, 100.0)
             ]));
 
-            var outlineMaterial = Cesium.Material.fromType(undefined, Cesium.Material.PolylineOutlineType);
-            outlineMaterial.uniforms.outlineWidth = 1.0;
+            //var glowMaterial = Cesium.Material.fromType(widget.scene.getContext(), 'PolylineGlow');
+			//glowMaterial.uniforms.color = Cesium.Color.fromCssColorString(colorScale(nation.region));
+			//glowMaterial.uniforms.glowPower = 0.1;
+			//widePolyline.setMaterial(glowMaterial);
+            var outlineMaterial = Cesium.Material.fromType(widget.scene.getContext(), 'PolylineOutline');
+            outlineMaterial.uniforms.outlineWidth = 3.0;
             outlineMaterial.uniforms.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
             outlineMaterial.uniforms.color = Cesium.Color.fromCssColorString(colorScale(nation.region));
             widePolyline.setMaterial(outlineMaterial);
@@ -40,19 +44,24 @@
     });
 	
 	function setBaseLayerPicker(widget) {
+	    var proxy = new Cesium.DefaultProxy('/proxy/');
+        //While some sites have CORS on, not all browsers implement it properly, so a proxy is needed anyway;
+        var proxyIfNeeded = Cesium.FeatureDetection.supportsCrossOriginImagery() ? undefined : proxy;
+		
 		var providerViewModels = [];
-		providerViewModels.push(Cesium.ImageryProviderViewModel.fromConstants({
+		providerViewModels.push(new Cesium.ImageryProviderViewModel({
 				name : 'Stamen Toner',
 				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/stamenToner.png',
 				tooltip : 'A high contrast black and white map.\nhttp://maps.stamen.com',
 				creationFunction : function() {
 					return new Cesium.OpenStreetMapImageryProvider({
 						url : 'http://tile.stamen.com/toner/',
-						credit : 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.'
+						credit : 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
+						proxy : proxyIfNeeded
 					});
 				}
 			}));
-		providerViewModels.push(Cesium.ImageryProviderViewModel.fromConstants({
+		providerViewModels.push(new Cesium.ImageryProviderViewModel({
 				name : 'Bing Maps Aerial',
 				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/bingAerial.png',
 				tooltip : 'Bing Maps aerial imagery \nhttp://www.bing.com/maps',
@@ -60,15 +69,18 @@
 					return new Cesium.BingMapsImageryProvider({
 						url : 'http://dev.virtualearth.net',
 						mapStyle : Cesium.BingMapsStyle.AERIAL,
+						proxy : proxyIfNeeded
 					});
 				}
 			}));
+			
+		debugger;
 			
 		//Finally, create the actual widget using our view models.
 		var layers = widget.centralBody.getImageryLayers();
 		var baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerPickerContainer', layers, providerViewModels);
 		//Use the first item in the list as the current selection.
-		baseLayerPicker.viewModel.selectedItem(providerViewModels[0]);
+		baseLayerPicker.viewModel.selectedItem = providerViewModels[0];
 	}
 
     function updateLineData() {
@@ -119,30 +131,29 @@
     tick();
 
     //widget.fullscreen.viewModel.fullscreenElement(document.body);
-    
-    widget.transitioner.toColumbusView();
 
 	// setup baselayer picker
 	setBaseLayerPicker(widget);
 	// setup clockview model
     var clockViewModel = new Cesium.ClockViewModel(widget.clock);
-    clockViewModel.startTime(Cesium.JulianDate.fromIso8601("1800-01-02"));
-    clockViewModel.currentTime(Cesium.JulianDate.fromIso8601("1800-01-02"));
-    clockViewModel.stopTime(Cesium.JulianDate.fromIso8601("2009-01-02"));
-    clockViewModel.clockRange(Cesium.ClockRange.LOOP_STOP);
-    clockViewModel.clockStep(Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER);
+    clockViewModel.startTime = Cesium.JulianDate.fromIso8601("1800-01-02");
+    clockViewModel.currentTime = Cesium.JulianDate.fromIso8601("1800-01-02");
+    clockViewModel.stopTime = Cesium.JulianDate.fromIso8601("2009-01-02");
+    clockViewModel.clockRange = Cesium.ClockRange.LOOP_STOP;
+    clockViewModel.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER;
     var yearPerSec = 86400*365;
-    clockViewModel.multiplier(yearPerSec * 5);
+    clockViewModel.multiplier = yearPerSec * 5;
     widget.clockViewModel = clockViewModel;
 	// setup animationview model
 	var animationViewModel = new Cesium.AnimationViewModel(widget.clockViewModel);
 	var animationWidget = new Cesium.Animation('animationContainer', animationViewModel);
 	widget.animationViewModel = animationViewModel;
     widget.animationViewModel.setShuttleRingTicks([yearPerSec, yearPerSec*5, yearPerSec*10, yearPerSec*50]);
-    widget.animationViewModel.setDateFormatter(function(date, viewModel) {
+	
+    widget.animationViewModel.dateFormatter = function(date, viewModel) {
         var gregorianDate = date.toGregorianDate();
         return 'Year: ' + gregorianDate.year;
-    });
+    };
 	// setup timeline
 	function onTimelineScrub(e) {
 		widget.clock.currentTime = e.timeJulian;
@@ -158,13 +169,12 @@
 	widget.transitioner = transitioner;
 	var sceneModePicker = new Cesium.SceneModePicker('sceneModePickerContainer', widget.transitioner)
 	// setup home button
-	var homeViewModel = new Cesium.HomeButtonViewModel(widget.scene);
-	var homeWidget = new Cesium.HomeButton('homeButtonContainer', widget.scene);
-	homeWidget.viewModel = homeViewModel;
+	var homeButton = new Cesium.HomeButton('homeButtonContainer', widget.scene, widget.transitioner, widget.ellipsoid, 1000);
 	// setup fullscreenbutton
-	var fullscreenViewModel = new Cesium.FullscreenButtonViewModel(document.body);
-	var fullscreenButton = new Cesium.FullscreenButton('fullscreenButtonContainer');
-	fullScreenButton.viewModel = fullscreenViewModel;
+	var fullscreenButton = new Cesium.FullscreenButton('fullscreenButtonContainer', document.body);
+	
+	
+	widget.transitioner.toColumbusView();
 	
 
 
