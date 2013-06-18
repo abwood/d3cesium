@@ -111,6 +111,9 @@
           .style("fill", function(d) { return colorScale(color(d)); })
           .call(position)
           .sort(order)
+		  .on("mouseover", function(d) { 
+				sharedObject.dispatch.nationMouseover(d); 
+		  })
           .on("click", function(d){
               sharedObject.flyTo(d);
           });
@@ -150,7 +153,7 @@
 
       sharedObject.dispatch.on("nationMouseover.d3", function(nationObject) {
           dot.style("fill", function(d) {
-                 if (typeof nationObject !== 'undefined' && d.name === nationObject.nationData.name) {
+                 if (typeof nationObject !== 'undefined' && d.name === nationObject.name) {
                      return "#00FF00";
                  }
 

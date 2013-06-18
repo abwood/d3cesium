@@ -4,11 +4,10 @@
     "use strict";
 
     var polylines = [];
+	var colorScale = d3.scale.category20c();
 
     // Load the data.
     d3.json("nations_geo.json", function(nations) {
-
-        var colorScale = d3.scale.category20c();
 
 
         var ellipsoid = widget.centralBody.getEllipsoid();
@@ -73,8 +72,6 @@
 					});
 				}
 			}));
-			
-		debugger;
 			
 		//Finally, create the actual widget using our view models.
 		var layers = widget.centralBody.getImageryLayers();
@@ -176,8 +173,37 @@
 	
 	widget.transitioner.toColumbusView();
 	
+	// If the mouse is over the billboard, change its scale and color
+	var highlightBarHandler = new Cesium.ScreenSpaceEventHandler(widget.scene.getCanvas());
+	highlightBarHandler.setInputAction(
+		function (movement) {
+			var pickedObject = widget.scene.pick(movement.endPosition);
+			if (typeof(pickedObject) !== 'undefined' &&
+				typeof(pickedObject.nationData) !== 'undefined') {
+				sharedObject.dispatch.nationMouseover(pickedObject.nationData); 
+			}
+		},
+		Cesium.ScreenSpaceEventType.MOUSE_MOVE
+	);
+	
+	
+	// Response to a nation's mouseover event
+	sharedObject.dispatch.on("nationMouseover.cesium", function(nationObject) {
+        for (var i=0; i<polylines.length; i++) {
+			var polyline = polylines[i];
+			var outlineMaterial = polyline.getMaterial();
+			if (polyline.nationData.name === nationObject.name) {
+				outlineMaterial.uniforms.color = Cesium.Color.fromCssColorString('#00ff00');
+			}
+			else {
+				outlineMaterial.uniforms.color = Cesium.Color.fromCssColorString(colorScale(polyline.nationData.region));
+			}
+        }
+      });
 
 
+	// define functionality for flying to a nation
+	// this callback is triggered when a nation is clicked
     sharedObject.flyTo = function(d) {
         var destination = Cesium.Cartographic.fromDegrees(d.lon, d.lat-20.0, 10000000.0);
         var lookAt = widget.centralBody.getEllipsoid().cartographicToCartesian(
