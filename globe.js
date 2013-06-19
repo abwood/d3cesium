@@ -73,6 +73,8 @@
 				}
 			}));
 			
+		widget.centralBody.getImageryLayers().removeAll();
+		
 		//Finally, create the actual widget using our view models.
 		var layers = widget.centralBody.getImageryLayers();
 		var baseLayerPicker = new Cesium.BaseLayerPicker('baseLayerPickerContainer', layers, providerViewModels);
