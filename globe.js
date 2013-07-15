@@ -207,21 +207,24 @@
 	// define functionality for flying to a nation
 	// this callback is triggered when a nation is clicked
     sharedObject.flyTo = function(d) {
+		var ellipsoid = widget.centralBody.getEllipsoid();
+		
         var destination = Cesium.Cartographic.fromDegrees(d.lon, d.lat-20.0, 10000000.0);
-        var lookAt = widget.centralBody.getEllipsoid().cartographicToCartesian(
-                                Cesium.Cartographic.fromDegrees(d.lon, d.lat, 0.0));
-        var direction = lookAt.subtract(widget.centralBody.getEllipsoid().cartographicToCartesian(destination)).normalize();
-        var up = direction.cross(lookAt).cross(direction).normalize();
+		var destCartesian = widget.centralBody.getEllipsoid().cartographicToCartesian(destination);
+		destination = ellipsoid.cartesianToCartographic(destCartesian);
+		
+		var lookat = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(d.lon, d.lat, 0.0));
+		var dirCartesian = lookat.subtract(destCartesian).normalize();
+		
 
         // only fly there if it is not the camera's current position
-        if (!widget.centralBody.getEllipsoid()
+        if (!ellipsoid
                    .cartographicToCartesian(destination)
                    .equalsEpsilon(widget.scene.getCamera().getPositionWC(), Cesium.Math.EPSILON6)) {
 
             var flight = Cesium.CameraFlightPath.createAnimationCartographic(widget.scene.getFrameState(), {
                 destination : destination,
-                direction : direction,
-                up : up
+				direction : dirCartesian
             });
             widget.scene.getAnimations().add(flight);
         }
