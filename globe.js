@@ -188,6 +188,19 @@
 		Cesium.ScreenSpaceEventType.MOUSE_MOVE
 	);
 	
+	var flyToHandler = new Cesium.ScreenSpaceEventHandler(widget.scene.getCanvas());
+	flyToHandler.setInputAction(
+		function (movement) {
+			var pickedObject = widget.scene.pick(movement.position);
+			debugger;
+			if (typeof(pickedObject) !== 'undefined' &&
+				typeof(pickedObject.nationData) !== 'undefined') {
+				sharedObject.flyTo(pickedObject.nationData);
+			}
+		},
+		Cesium.ScreenSpaceEventType.LEFT_CLICK
+	);
+	
 	
 	// Response to a nation's mouseover event
 	sharedObject.dispatch.on("nationMouseover.cesium", function(nationObject) {
