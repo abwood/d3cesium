@@ -3,6 +3,8 @@
   <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Cesium + d3 Data Visualization</title>
+	<script type="text/javascript" src="3rdParty/jquery-ui-1.10.3/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="3rdParty/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
     <script type="text/javascript" src="3rdParty/Cesium/Build/Cesium/Cesium.js"></script>
     <script type="text/javascript" src="3rdParty/d3/d3.v3.js"></script>
 	<script type="text/javascript">
@@ -13,6 +15,7 @@
 		};
     </script>
     <style>
+      @import url(3rdParty/jquery-ui-1.10.3/themes/vader/jquery-ui.css);
       @import url(d3chart.css);
       @import url(3rdParty/Cesium/Build/Cesium/Widgets/CesiumWidget/CesiumWidget.css);
       @import url(3rdParty/Cesium/Build/Cesium/Widgets/BaseLayerPicker/BaseLayerPicker.css);
@@ -30,6 +33,7 @@
   </head>
 <body>
 	<div id="chart"></div>
+	<div id="info" title="Nation Health and Wealth"></div>
 	<div id="cesiumContainer"></div>
 	<div id="fullscreenButtonContainer" style="position: absolute; top:16px; right:16px; width:32px; height:32px;"></div>
 	<div id="baseLayerPickerContainer" style="position: absolute; top:16px; right:48px; width:32px; height:32px;"></div>

@@ -201,6 +201,23 @@
 				outlineMaterial.uniforms.color = Cesium.Color.fromCssColorString(colorScale(polyline.nationData.region));
 			}
         }
+		
+		$("#info table").remove();
+		$("#info").append("<table> \
+		<tr><td>Life Expectancy:</td><td>" +parseFloat(nationObject.lifeExpectancy).toFixed(1)+"</td></tr>\
+		<tr><td>Income:</td><td>" +parseFloat(nationObject.income).toFixed(1)+"</td></tr>\
+		<tr><td>Population:</td><td>" +parseFloat(nationObject.population).toFixed(1)+"</td></tr>\
+		</table>\
+		");
+		$("#info table").css("font-size", "12px");
+		$("#info").dialog({
+			title : nationObject.name,
+			width: 300,
+			height: 150,
+			modal: false,
+			position: {my: "right center", at: "right center", of: "canvas"},
+			show: "slow"
+		});
       });
 
 
