@@ -5,6 +5,18 @@
 
     var polylines = [];
 	var colorScale = d3.scale.category20c();
+	var selectedData = "health";
+	
+	
+	$("#radio").buttonset();
+	$("#radio").css("font-size", "12px");
+	$("#radio").css("font-size", "12px");
+	$("body").css("background-color", "black");
+	
+	$("input[name='healthwealth']").change(function(d){
+		selectedData = d.target.id;
+		updateLineData();
+	});
 
     // Load the data.
     d3.json("nations_geo.json", function(nations) {
@@ -85,17 +97,24 @@
     function updateLineData() {
         var ellipsoid = widget.centralBody.getEllipsoid();
         var xScale = d3.scale.log().domain([300, 1e5]).range([0, 10000000.0]);
-        //var yScale = d3.scale.linear().domain([10, 85]).range([2, 5]);
+		var yScale = d3.scale.linear().domain([10, 85]).range([0, 10000000.0]);
         var widthScale = d3.scale.sqrt().domain([0, 5e8]).range([5, 30]);
 
         for (var i=0; i<polylines.length; i++) {
             var nation = sharedObject.yearData[i];
             var polyline = polylines[i];
 
-            polyline.setPositions(ellipsoid.cartographicArrayToCartesianArray([
-                           Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, 0.0),
-                           Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, xScale(nation.income))
-                           ]));
+			if (selectedData === "health") {
+				polyline.setPositions(ellipsoid.cartographicArrayToCartesianArray([
+							   Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, 0.0),
+							   Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, yScale(nation.lifeExpectancy))
+							   ]));
+			} else {
+				polyline.setPositions(ellipsoid.cartographicArrayToCartesianArray([
+							   Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, 0.0),
+							   Cesium.Cartographic.fromDegrees(nation.lon, nation.lat, xScale(nation.income))
+							   ]));
+			}
             polyline.setWidth(widthScale(nation.population));
 
             // push data to polyline so that we have mouseover information available
@@ -192,7 +211,7 @@
 	flyToHandler.setInputAction(
 		function (movement) {
 			var pickedObject = widget.scene.pick(movement.position);
-			debugger;
+
 			if (typeof(pickedObject) !== 'undefined' &&
 				typeof(pickedObject.nationData) !== 'undefined') {
 				sharedObject.flyTo(pickedObject.nationData);
