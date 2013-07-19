@@ -6,6 +6,7 @@
     var polylines = [];
 	var colorScale = d3.scale.category20c();
 	var selectedData = "health";
+	var selectedNation = 'undefined'
 	
 	
 	$("#radio").buttonset();
@@ -119,6 +120,17 @@
 
             // push data to polyline so that we have mouseover information available
             polyline.nationData = nation;
+			
+			if (nation.name === selectedNation) {
+				$("#info table").remove();
+				$("#info").append("<table> \
+				<tr><td>Life Expectancy:</td><td>" +parseFloat(nation.lifeExpectancy).toFixed(1)+"</td></tr>\
+				<tr><td>Income:</td><td>" +parseFloat(nation.income).toFixed(1)+"</td></tr>\
+				<tr><td>Population:</td><td>" +parseFloat(nation.population).toFixed(1)+"</td></tr>\
+				</table>\
+				");
+				$("#info table").css("font-size", "12px");
+			}
 
             //polyline.getMaterial().uniforms.outlineWidth = yScale(nation.lifeExpectancy);
         }
@@ -233,6 +245,8 @@
 				outlineMaterial.uniforms.color = Cesium.Color.fromCssColorString(colorScale(polyline.nationData.region));
 			}
         }
+		
+		selectedNation = nationObject.name;
 		
 		$("#info table").remove();
 		$("#info").append("<table> \
