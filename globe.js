@@ -50,7 +50,7 @@
 		var providerViewModels = [];
 		providerViewModels.push(new Cesium.ImageryProviderViewModel({
 				name : 'Stamen Toner',
-				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/stamenToner.png',
+				iconUrl : '3rdParty/cesium/Build/Cesium/Widgets/Images/ImageryProviders/stamenToner.png',
 				tooltip : 'A high contrast black and white map.\nhttp://maps.stamen.com',
 				creationFunction : function() {
 					return new Cesium.OpenStreetMapImageryProvider({
@@ -62,7 +62,7 @@
 			}));
 		providerViewModels.push(new Cesium.ImageryProviderViewModel({
 				name : 'Bing Maps Aerial',
-				iconUrl : '3rdParty/Cesium/Source/Widgets/Images/ImageryProviders/bingAerial.png',
+				iconUrl : '3rdParty/cesium/Build/Cesium/Widgets/Images/ImageryProviders/bingAerial.png',
 				tooltip : 'Bing Maps aerial imagery \nhttp://www.bing.com/maps',
 				creationFunction : function() {
 					return new Cesium.BingMapsImageryProvider({
