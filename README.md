@@ -5,11 +5,19 @@ Hans Rosling’s compelling visualization of the “Health and Wealth of Nations”.  
 @emackey ’s entry for a one day hackathon hosted at Analytical Graphics, Inc in April of 2013.  The goal of this hackathon 
 attempt was to showcase the simplicity of supplementing 3D geospatial visualizations with rich and interactive dynamic data plots. 
 
-<img align="center" src="https://github.com/abwood/d3cesium/blob/master/screenshot.png?raw=true" width="50%" height="50%" style="display: block; margin-left: auto; margin-right: auto">
+<p align="center">
+<img src="https://github.com/abwood/d3cesium/blob/master/screenshot.png?raw=true" width="50%" height="50%" style="display: block; margin-left: auto; margin-right: auto">
+</p>
  
 At its core, we repurposed Mike Bostock’s D3 recreation of Hans Roslings’ “Health and Wealth of Nations” as an interactive 
 overlay for a Cesium geospatial view.  We were able to add new context to the data by geolocating each data point with its 
 country of origin.
+
+Sources:
+-------------------------------
+d3js.org Health and Wealth Example: http://bost.ocks.org/mike/nations/
+Han's Roslings 4 minute video on the 2D visualization: http://www.youtube.com/watch?v=jbkSRLYSojo
+
  
 Health and Wealth Dataset
 =========================
