@@ -6,7 +6,7 @@ Hans Rosling’s compelling visualization of the “Health and Wealth of Nations”.  
 attempt was to showcase the simplicity of supplementing 3D geospatial visualizations with rich and interactive dynamic data plots. 
 
 <p align="center">
-<img src="https://github.com/abwood/d3cesium/blob/master/screenshot.png?raw=true" width="50%" height="50%" style="display: block; margin-left: auto; margin-right: auto">
+<img src="https://github.com/abwood/d3cesium/blob/master/screenshot.png?raw=true" width="75%" height="75%" style="display: block; margin-left: auto; margin-right: auto">
 </p>
  
 At its core, we repurposed Mike Bostock’s D3 recreation of Hans Roslings’ “Health and Wealth of Nations” as an interactive 
@@ -15,9 +15,10 @@ country of origin.
 
 Sources:
 -------------------------------
-d3js.org Health and Wealth Example: http://bost.ocks.org/mike/nations/
-Han's Roslings 4 minute video on the 2D visualization: http://www.youtube.com/watch?v=jbkSRLYSojo
-
+ * Cesium - http://cesium.agi.org
+ * D3JS - http://d3js.org
+ * Mike Bostocks' Health and Wealth Example: http://bost.ocks.org/mike/nations/
+ * Han's Roslings 4 minute video on the 2D visualization: http://www.youtube.com/watch?v=jbkSRLYSojo
  
 Health and Wealth Dataset
 =========================
