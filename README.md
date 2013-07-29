@@ -36,9 +36,8 @@ Installing from the git console
 This sample application is setup to stay current with the Cesium repository, by use of git submodules.  To setup this application 
 on a local machine, follow the instructions below.
 
-    > mkdir d3cesium
     > git clone https://github.com/abwood/d3cesium.git
-    > git submodule update –init
+    > git submodule update --init
     > cd 3rdParty/cesium
     > Tools/apache-ant-1.8.2/bin/ant
 
