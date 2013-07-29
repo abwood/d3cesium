@@ -1,9 +1,10 @@
 D3 Cesium Demo Application
 ==========================
+Immersive and interactive analytical environments are paramount for communicating dynamic and complex data to various stakeholders.
 This application showcases the synergy between powerful open source visualization frameworks of D3 and Cesium, by recreating 
 Hans Rosling’s compelling visualization of the “Health and Wealth of Nations”.  This demo is largely the result of @abwood and 
 @emackey ’s entry for a one day hackathon hosted at Analytical Graphics, Inc in April of 2013.  The goal of this hackathon 
-attempt was to showcase the simplicity of supplementing 3D geospatial visualizations with rich and interactive dynamic data plots. 
+attempt was to demostrate the simplicity of supplementing 3D geospatial visualizations with rich and interactive dynamic data plots.
 
 <p align="center">
 <img src="https://github.com/abwood/d3cesium/blob/master/screenshot.png?raw=true" width="75%" height="75%" style="display: block; margin-left: auto; margin-right: auto">
