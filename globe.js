@@ -21,8 +21,6 @@
 
     // Load the data.
     d3.json("nations_geo.json", function(nations) {
-
-
         var ellipsoid = viewer.scene.globe.ellipsoid;
         var primitives = viewer.scene.primitives;
         var polylineCollection = new Cesium.PolylineCollection();
@@ -102,8 +100,9 @@
     		});
     
 	var year = 1800;
+	var gregorianDate = new Cesium.GregorianDate();
     function animate() {
-        var gregorianDate = viewer.clock.currentTime.toGregorianDate();
+		Cesium.JulianDate.toGregorianDate(viewer.clock.currentTime, gregorianDate);
         var currentYear = gregorianDate.year + gregorianDate.month/12;// + gregorianDate.day/31;
         if (currentYear !== year && typeof window.displayYear !== 'undefined'){
             window.displayYear(currentYear);
@@ -137,7 +136,7 @@
     viewer.animation.viewModel.setShuttleRingTicks([yearPerSec, yearPerSec*5, yearPerSec*10, yearPerSec*50]);
 	
     viewer.animation.viewModel.dateFormatter = function(date, viewModel) {
-        var gregorianDate = date.toGregorianDate();
+    	Cesium.JulianDate.toGregorianDate(date, gregorianDate);
         return 'Year: ' + gregorianDate.year;
     };
     
@@ -219,7 +218,7 @@
     sharedObject.flyTo = function(d) {
 		var ellipsoid = viewer.scene.globe.ellipsoid;
 		
-        var destination = Cesium.Cartographic.fromDegrees(d.lon, d.lat-20.0, 10000000.0);
+        var destination = Cesium.Cartographic.fromDegrees(d.lon, d.lat - 5.0, 10000000.0);
 		var destCartesian = ellipsoid.cartographicToCartesian(destination);
 		destination = ellipsoid.cartesianToCartographic(destCartesian);
 
@@ -227,11 +226,10 @@
         if (!ellipsoid
                    .cartographicToCartesian(destination)
                    .equalsEpsilon(viewer.scene.camera.positionWC, Cesium.Math.EPSILON6)) {
-
-            var flight = Cesium.CameraFlightPath.createAnimationCartographic(viewer.scene, {
-                destination : destination
-            });
-            viewer.scene.animations.add(flight);
+        	
+        	viewer.scene.camera.flyTo({
+        		destination: destCartesian
+        	});
         }
     };
 
