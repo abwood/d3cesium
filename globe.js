@@ -4,6 +4,7 @@
     "use strict";
     var yearPerSec = 86400*365;
     var gregorianDate = new Cesium.GregorianDate();
+    var cartesian3Scratch = new Cesium.Cartesian3();
 
     var HealthAndWealthDataSource = function() {
         // private declarations
@@ -104,6 +105,7 @@
         if (!Cesium.defined(data)) {
             throw new Cesium.DeveloperError("data must be defined.");
         }
+        var ellipsoid = viewer.scene.globe.ellipsoid;
 
         this._setLoading(true);
         var entities = this._entityCollection;
@@ -118,7 +120,7 @@
         for (var i = 0; i < data.length; i++){
             var nation = data[i];
             var surfacePosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 0.0);
-            var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 10000000);
+            //var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 10000000);
 
             var polyline = new Cesium.PolylineGraphics();
             polyline.show = new Cesium.ConstantProperty(true);
@@ -129,7 +131,7 @@
             polyline.material = outlineMaterial;
             polyline.width = new Cesium.ConstantProperty(5);
             polyline.followSurface = new Cesium.ConstantProperty(false);
-            polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
+            //polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
 
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity(nation.name);
@@ -138,15 +140,15 @@
             entity.addProperty('region');
             entity.region = nation.region;
 
-            entity.addProperty('wealth');
-            var wealth = new Cesium.SampledProperty(Number);
+            var wealth = new Cesium.SampledPositionProperty();
 
             for (var j = 0; j < nation.income.length; j++) {
                 var year = nation.income[j][0];
                 var income = nation.income[j][1];
-                wealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), income);
+                var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._wealthScale(income), ellipsoid, cartesian3Scratch);
+                wealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), heightPosition);
             }
-            entity.wealth = wealth;
+            polyline.positions = new Cesium.PositionPropertyArray([new Cesium.ConstantPositionProperty(surfacePosition), wealth]);
 
             //Add the entity to the collection.
             entities.add(entity);
@@ -183,7 +185,7 @@
         if (currentYear !== this._year && typeof window.displayYear !== 'undefined'){
             window.displayYear(currentYear);
             this._year = currentYear;
-            this.updateLines(time);
+            //this.updateLines(time);
         }
     };
 
