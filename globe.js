@@ -138,6 +138,16 @@
             entity.addProperty('region');
             entity.region = nation.region;
 
+            entity.addProperty('wealth');
+            var wealth = new Cesium.SampledProperty(Number);
+
+            for (var j = 0; j < nation.income.length; j++) {
+                var year = nation.income[j][0];
+                var income = nation.income[j][1];
+                wealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), income);
+            }
+            entity.wealth = wealth;
+
             //Add the entity to the collection.
             entities.add(entity);
         }
@@ -156,14 +166,15 @@
     };
 
     HealthAndWealthDataSource.prototype.updateLines = function(time) {
-        //var entities = this._entityCollection.entities;
+        var entities = this._entityCollection.entities;
 
-        //for (var i = 0; i < entities.length; i++) {
+        for (var i = 0; i < entities.length; i++) {
+        	var entity = entities[i];
             //var wealth = entitites[i].wealth.getValue(time);
             //var surfacePosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 0.0);
             //var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._wealthScale(wealth));
             //entities[i].polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
-        //}
+        }
     };
 
     HealthAndWealthDataSource.prototype.update = function(time) {
