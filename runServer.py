@@ -1,7 +1,7 @@
 import SimpleHTTPServer
 import SocketServer
 
-port = 8080
+port = 8081
 
 httpHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
 httpHandler.extensions_map['svg'] = 'image/svg+xml'
