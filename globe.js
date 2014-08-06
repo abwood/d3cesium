@@ -120,7 +120,6 @@
         for (var i = 0; i < data.length; i++){
             var nation = data[i];
             var surfacePosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 0.0);
-            //var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 10000000);
 
             var polyline = new Cesium.PolylineGraphics();
             polyline.show = new Cesium.ConstantProperty(true);
@@ -131,11 +130,13 @@
             polyline.material = outlineMaterial;
             polyline.width = new Cesium.ConstantProperty(5);
             polyline.followSurface = new Cesium.ConstantProperty(false);
-            //polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
 
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity(nation.name);
             entity.polyline = polyline;
+            //entity.point = new Cesium.PointGraphics();
+            //entity.point.pixelSize = new Cesium.ConstantProperty(5);
+
             // Add a property to the entity that indicates the region.
             entity.addProperty('region');
             entity.region = nation.region;
@@ -148,6 +149,7 @@
                 var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._wealthScale(income), ellipsoid, cartesian3Scratch);
                 wealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), heightPosition);
             }
+            //entity.position = wealth;
             polyline.positions = new Cesium.PositionPropertyArray([new Cesium.ConstantPositionProperty(surfacePosition), wealth]);
 
             //Add the entity to the collection.
@@ -167,29 +169,17 @@
         }
     };
 
-    HealthAndWealthDataSource.prototype.updateLines = function(time) {
-        var entities = this._entityCollection.entities;
-
-        for (var i = 0; i < entities.length; i++) {
-        	var entity = entities[i];
-            //var wealth = entitites[i].wealth.getValue(time);
-            //var surfacePosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 0.0);
-            //var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._wealthScale(wealth));
-            //entities[i].polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
-        }
-    };
-
     HealthAndWealthDataSource.prototype.update = function(time) {
         Cesium.JulianDate.toGregorianDate(time, gregorianDate);
         var currentYear = gregorianDate.year + gregorianDate.month / 12;
         if (currentYear !== this._year && typeof window.displayYear !== 'undefined'){
             window.displayYear(currentYear);
             this._year = currentYear;
-            //this.updateLines(time);
         }
+
+        return true;
     };
 
-    //var polylines = [];
     var colorScale = d3.scale.category20c();
     var selectedData = "health";
     var selectedNation = 'undefined'
@@ -202,7 +192,6 @@
 
     $("input[name='healthwealth']").change(function(d){
         selectedData = d.target.id;
-        //updateLineData();
     });
 
 //    // Load the data.
@@ -284,32 +273,10 @@
                 sceneMode : Cesium.SceneMode.COLUMBUS_VIEW
             });
 
-    function animate() {
-        Cesium.JulianDate.toGregorianDate(viewer.clock.currentTime, gregorianDate);
-        var currentYear = gregorianDate.year + gregorianDate.month/12;// + gregorianDate.day/31;
-        if (currentYear !== year && typeof window.displayYear !== 'undefined'){
-            window.displayYear(currentYear);
-            year = currentYear;
-
-            //updateLineData();
-        }
-    }
-
-//    function tick() {
-//        viewer.scene.initializeFrame();
-//        animate();
-//        viewer.scene.render();
-//        Cesium.requestAnimationFrame(tick);
-//    }
-//    tick();
-
-    //viewer.fullscreenButton.viewModel.fullscreenElement = document.body;
-
     var stamenTonerImagery = viewer.baseLayerPicker.viewModel.imageryProviderViewModels[8];
     viewer.baseLayerPicker.viewModel.selectedImagery = stamenTonerImagery;
 
     // setup clockview model
-    var yearPerSec = 86400*365;
     viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
     viewer.clock.startTime = Cesium.JulianDate.fromIso8601("1800-01-02");
     viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("1800-01-02");
@@ -322,15 +289,6 @@
         Cesium.JulianDate.toGregorianDate(date, gregorianDate);
         return 'Year: ' + gregorianDate.year;
     };
-
-    // setup timeline
-    function onTimelineScrub(e) {
-        viewer.clock.currentTime = e.timeJulian;
-        viewer.clock.shouldAnimate = false;
-    }
-    viewer.timeline.addEventListener('settime', onTimelineScrub, false);
-    viewer.timeline.updateFromClock();
-    viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime);    
 
     var healthAndWealth = new HealthAndWealthDataSource();
     healthAndWealth.loadUrl('nations_geo.json');
