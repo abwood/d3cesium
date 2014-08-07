@@ -139,6 +139,7 @@
             var nation = data[i];
             var surfacePosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, 0.0);
 
+            // Construct Wealth related Properties
             var wealth = new Cesium.SampledPositionProperty();
             var sampledWealth = new Cesium.SampledProperty(Number);
             var heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._wealthScale(nation.income[0][1]), ellipsoid, cartesian3Scratch);
@@ -151,7 +152,10 @@
                 wealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), heightPosition);
                 sampledWealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), income);
             }
+            wealth.addSample(Cesium.JulianDate.fromIso8601("2010"), surfacePosition);
+            sampledWealth.addSample(Cesium.JulianDate.fromIso8601("2010"), 0.0);
 
+            // Construct Health related Properties
             var health = new Cesium.SampledPositionProperty();
             var sampledHealth = new Cesium.SampledProperty(Number);
             heightPosition = Cesium.Cartesian3.fromDegrees(nation.lon, nation.lat, this._healthScale(nation.lifeExpectancy[0][1]), ellipsoid, cartesian3Scratch);
@@ -164,17 +168,23 @@
                 health.addSample(Cesium.JulianDate.fromIso8601(year.toString()), heightPosition);
                 sampledHealth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), lifeExpectancy);
             }
+            health.addSample(Cesium.JulianDate.fromIso8601("2010"), surfacePosition);
+            sampledHealth.addSample(Cesium.JulianDate.fromIso8601("2010"), 0.0);
 
+            // Construct Population related Properties
             var populationWidth = new Cesium.SampledProperty(Number);
             var sampledPopulation = new Cesium.SampledProperty(Number);
-            populationWidth.addSample(Cesium.JulianDate.fromIso8601("1799"), 5);
+            populationWidth.addSample(Cesium.JulianDate.fromIso8601("1799"), this._populationScale(nation.population[0][1]));
             sampledPopulation.addSample(Cesium.JulianDate.fromIso8601("1799"), nation.population[0][1]);
+            var population = 0.0;
             for (var j = 0; j < nation.population.length; j++) {
                 var year = nation.population[j][0];
-                var population = nation.population[j][1];
+                population = nation.population[j][1];
                 populationWidth.addSample(Cesium.JulianDate.fromIso8601(year.toString()), this._populationScale(population));
                 sampledPopulation.addSample(Cesium.JulianDate.fromIso8601(year.toString()), population);
             }
+            populationWidth.addSample(Cesium.JulianDate.fromIso8601("2010"), this._populationScale(population));
+            sampledPopulation.addSample(Cesium.JulianDate.fromIso8601("2010"), population);
 
             var polyline = new Cesium.PolylineGraphics();
             polyline.show = new Cesium.ConstantProperty(true);
@@ -190,7 +200,7 @@
             entity.polyline = polyline;
             polyline.positions = new Cesium.PositionPropertyArray([new Cesium.ConstantPositionProperty(surfacePosition), health]);
 
-            // Add a property to the entity that indicates the region.
+            // Add data properties to entity
             entity.addProperty('region');
             entity.region = nation.region;
             entity.addProperty('wealth');
