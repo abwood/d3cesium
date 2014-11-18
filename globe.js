@@ -304,7 +304,6 @@
     var viewer = new Cesium.Viewer('cesiumContainer', 
             {
                 fullscreenElement : document.body,
-                sceneMode : Cesium.SceneMode.COLUMBUS_VIEW,
                 infoBox : false
             });
 
@@ -330,6 +329,8 @@
     viewer.scene.skyBox.show = false;
     viewer.scene.sun.show = false;
     viewer.scene.moon.show = false;
+
+    viewer.scene.morphToColumbusView(5.0)
 
     var healthAndWealth = new HealthAndWealthDataSource();
     healthAndWealth.loadUrl('nations_geo.json');
