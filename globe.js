@@ -253,10 +253,10 @@
             <tr><td>Population:</td><td>" +parseFloat(population).toFixed(1)+"</td></tr>\
             </table>\
             ");
-            $("#info table").css("font-size", "12px");
+            $("#info table").css("font-size", "10px");
             $("#info").dialog({
                 title : this._selectedEntity.id,
-                width: 300,
+                width: 200,
                 height: 150,
                 modal: false,
                 position: {my: "right center", at: "right center", of: "canvas"},
@@ -372,10 +372,10 @@
         <tr><td>Population:</td><td>" +parseFloat(nationObject.population).toFixed(1)+"</td></tr>\
         </table>\
         ");
-        $("#info table").css("font-size", "12px");
+        $("#info table").css("font-size", "10px");
         $("#info").dialog({
             title : nationObject.name,
-            width: 300,
+            width: 200,
             height: 150,
             modal: false,
             position: {my: "right center", at: "right center", of: "canvas"},
